@@ -3,33 +3,37 @@ sys.path.append("..")
 from utils.helper import *
 from utils.ui.reg_components import *
 
+def reset_regression_state():
+    """Resets regression-related session state variables."""
+    st.session_state.reg_selected_sample = None
+    st.session_state.reg_slider_values = None
+    st.session_state.reg_previous_prediction = None
+    st.session_state.reg_updated_prediction = None
+
 def display_reg():
     st.header("Regression")
-    # Option to choose preloaded models/datasets or upload files
+    
+    # Initialize session state variables for regression if not present
+    if "reg_selected_sample" not in st.session_state:
+        reset_regression_state()
+
+    # Choose regression setup
     regression_option = st.radio(
         "Choose a regression setup:",
         ("Upload Files", "Use Preloaded Models/Datasets"),
         horizontal=True,
     )
 
-    # Track the previously selected model/dataset to detect changes
-    if "last_regression_model" not in st.session_state:
-        st.session_state.last_regression_model = None
-    if "last_regression_dataset" not in st.session_state:
-        st.session_state.last_regression_dataset = None
-
     model, dataset = None, None
 
     if regression_option == "Upload Files":
-        # File upload
         col1, col2 = st.columns(2)
         with col1:
-            model_file = st.file_uploader("Upload your model (.pkl):", type=["pkl"])
+            model_file = st.file_uploader("Upload your model (.pkl):", type=["pkl"], key="reg_model_file")
         with col2:
-            dataset_file = st.file_uploader("Upload your dataset (.csv):", type=["csv"])
+            dataset_file = st.file_uploader("Upload your dataset (.csv):", type=["csv"], key="reg_dataset_file")
 
         if model_file and dataset_file:
-            # Detect changes and reset state
             if st.session_state.last_regression_model != model_file or st.session_state.last_regression_dataset != dataset_file:
                 st.session_state.last_regression_model = model_file
                 st.session_state.last_regression_dataset = dataset_file
@@ -39,7 +43,6 @@ def display_reg():
             dataset = load_dataset(dataset_file)
 
     else:
-        # Preloaded models and datasets
         preloaded_option = st.selectbox(
             "Select a preloaded model and dataset:",
             [
@@ -53,7 +56,6 @@ def display_reg():
         elif preloaded_option == "Decision Tree Regressor + Auto MPG Dataset":
             model_path, dataset_path = "models/reg_tree_miles.pkl", "data/reg_tree_miles_test.csv"
 
-        # Detect changes and reset state
         if st.session_state.last_regression_model != model_path or st.session_state.last_regression_dataset != dataset_path:
             st.session_state.last_regression_model = model_path
             st.session_state.last_regression_dataset = dataset_path
@@ -62,17 +64,16 @@ def display_reg():
         model = load_model(model_path)
         dataset = load_dataset(dataset_path)
 
-    # If files are uploaded or preloaded models are selected
+    # Load new sample and update state
     if model and dataset is not None:
-        if st.button("Load New Sample 🔄", key="reg_key"):
-            # Load new sample and update state
-            st.session_state.selected_sample_reg = dataset.sample(1).iloc[0]
-            st.session_state.slider_values_reg = st.session_state.selected_sample_reg.to_dict()
-            st.session_state.previous_prediction_reg = model.predict([st.session_state.selected_sample_reg])[0]
-            st.session_state.updated_prediction_reg = st.session_state.previous_prediction_reg
+        if st.button("Load New Sample 🔄", key="reg_load_sample"):
+            st.session_state.reg_selected_sample = dataset.sample(1).iloc[0]
+            st.session_state.reg_slider_values = st.session_state.reg_selected_sample.to_dict()
+            st.session_state.reg_previous_prediction = model.predict([st.session_state.reg_selected_sample])[0]
+            st.session_state.reg_updated_prediction = st.session_state.reg_previous_prediction
 
-        if st.session_state.selected_sample_reg is not None:
-            sample = st.session_state.selected_sample_reg
+        if st.session_state.reg_selected_sample is not None:
+            sample = st.session_state.reg_selected_sample
 
             with st.container():
                 st.markdown('<div class="full-width">', unsafe_allow_html=True)
@@ -88,21 +89,14 @@ def display_reg():
             # Right: Predictions
             with layout_cols[1]:
                 st.subheader("Predictions")
-                st.session_state.updated_prediction_reg = update_prediction(
-                    model, sample, st.session_state.slider_values_reg
+                st.session_state.reg_updated_prediction = update_prediction(
+                    model, sample, st.session_state.reg_slider_values
                 )[0]
-                display_predictions(st.session_state.previous_prediction_reg, st.session_state.updated_prediction_reg)
+                display_predictions(st.session_state.reg_previous_prediction, st.session_state.reg_updated_prediction)
 
             # Sliders for Feature Adjustment
             st.subheader("Adjust Features")
-            st.session_state.slider_values_reg = display_sliders(sample, dataset)
+            st.session_state.reg_slider_values = display_sliders(sample, dataset)
 
         else:
             st.warning("Click 'Load New Sample' to start.")
-
-def reset_regression_state():
-    """Resets regression-related session state variables."""
-    st.session_state.selected_sample_reg = None
-    st.session_state.slider_values_reg = None
-    st.session_state.previous_prediction_reg = None
-    st.session_state.updated_prediction_reg = None

@@ -59,24 +59,37 @@ st.sidebar.info("""
 Happy exploring!
 """)
 
-# Initialize session state
-if "selected_sample_reg" not in st.session_state:
-    st.session_state.selected_sample_reg = None
-if "slider_values_reg" not in st.session_state:
-    st.session_state.slider_values_reg = None
-if "previous_prediction_reg" not in st.session_state:
-    st.session_state.previous_prediction_reg = None
-if "updated_prediction_reg" not in st.session_state:
-    st.session_state.updated_prediction_reg = None
+def initialize_session_state():
+    """Initialize session state variables for regression and classification."""
+    # Regression tab session state variables
+    if "reg_selected_sample" not in st.session_state:
+        st.session_state.reg_selected_sample = None
+    if "reg_slider_values" not in st.session_state:
+        st.session_state.reg_slider_values = None
+    if "reg_previous_prediction" not in st.session_state:
+        st.session_state.reg_previous_prediction = None
+    if "reg_updated_prediction" not in st.session_state:
+        st.session_state.reg_updated_prediction = None
+    if "last_regression_model" not in st.session_state:
+        st.session_state.last_regression_model = None
+    if "last_regression_dataset" not in st.session_state:
+        st.session_state.last_regression_dataset = None
 
-if "selected_sample_clf" not in st.session_state:
-    st.session_state.selected_sample_clf = None
-if "slider_values_clf" not in st.session_state:
-    st.session_state.slider_values_clf = None
-if "previous_proba_clf" not in st.session_state:
-    st.session_state.previous_proba_clf = None
-if "updated_proba_clf" not in st.session_state:
-    st.session_state.updated_proba_clf = None
+    # Classification tab session state variables
+    if "clf_selected_sample" not in st.session_state:
+        st.session_state.clf_selected_sample = None
+    if "clf_slider_values" not in st.session_state:
+        st.session_state.clf_slider_values = None
+    if "clf_previous_proba" not in st.session_state:
+        st.session_state.clf_previous_proba = None
+    if "clf_updated_proba" not in st.session_state:
+        st.session_state.clf_updated_proba = None
+    if "last_classification_model" not in st.session_state:
+        st.session_state.last_classification_model = None
+    if "last_classification_dataset" not in st.session_state:
+        st.session_state.last_classification_dataset = None
+
+initialize_session_state()
 
 # Tabs for Regression and Classification
 tab1, tab2 = st.tabs(["Regression", "Classification"])
