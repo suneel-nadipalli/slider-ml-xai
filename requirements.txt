@@ -6,3 +6,4 @@ streamlit
 streamlit-vertical-slider
 seaborn
 streamlit_toggle
+shap
