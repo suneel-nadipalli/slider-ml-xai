@@ -34,8 +34,6 @@ def display_clf():
         )
 
         if preloaded_option == "Logistic Regressor + Titanic Dataset":
-            st.session_state.selected_sample = None
-            st.session_state.slider_values = None
             model = load_model("models/log_reg_titanic.pkl")
             dataset = load_dataset("data/log_reg_titanic_test.csv")
 

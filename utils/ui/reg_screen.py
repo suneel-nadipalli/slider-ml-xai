@@ -35,13 +35,10 @@ def display_reg():
         )
 
         if preloaded_option == "Linear Regressor + House Prices Dataset":
-            st.session_state.selected_sample = None
-            st.session_state.slider_values = None
             model = load_model("models/reg_house_price.pkl")  # Path to pre-saved model
             dataset = load_dataset("data/reg_house_price_test.csv")  # Path to pre-saved dataset
         elif preloaded_option == "Decision Tree Regressor + Auto MPG Dataset":
-            st.session_state.selected_sample = None
-            st.session_state.slider_values = None
+
             model = load_model("models/reg_tree_miles.pkl")
             dataset = load_dataset("data/reg_tree_miles_test.csv")
 
