@@ -1,9 +1,4 @@
-import time
 import streamlit as st
-from streamlit_vertical_slider import vertical_slider
-# import sys
-
-# sys.path.append("..")
 
 from utils.helper import *
 
@@ -13,7 +8,7 @@ from utils.ui.reg_screen import *
 from utils.ui.clf_screen import *
 from utils.ui.clf_components import *
 
-st.set_page_config(layout="wide")
+st.set_page_config(page_title="Slider ML", page_icon="📊", layout="wide")
 
 # CSS for styling
 st.markdown("""
@@ -65,18 +60,23 @@ Happy exploring!
 """)
 
 # Initialize session state
-if "selected_sample" not in st.session_state:
-    st.session_state.selected_sample = None
-if "slider_values" not in st.session_state:
-    st.session_state.slider_values = None
-if "previous_prediction" not in st.session_state:
-    st.session_state.previous_prediction = None
-if "updated_prediction" not in st.session_state:
-    st.session_state.updated_prediction = None
-if "previous_proba" not in st.session_state:
-    st.session_state.previous_proba = None
-if "updated_proba" not in st.session_state:
-    st.session_state.updated_proba = None
+if "selected_sample_reg" not in st.session_state:
+    st.session_state.selected_sample_reg = None
+if "slider_values_reg" not in st.session_state:
+    st.session_state.slider_values_reg = None
+if "previous_prediction_reg" not in st.session_state:
+    st.session_state.previous_prediction_reg = None
+if "updated_prediction_reg" not in st.session_state:
+    st.session_state.updated_prediction_reg = None
+
+if "selected_sample_clf" not in st.session_state:
+    st.session_state.selected_sample_clf = None
+if "slider_values_clf" not in st.session_state:
+    st.session_state.slider_values_clf = None
+if "previous_proba_clf" not in st.session_state:
+    st.session_state.previous_proba_clf = None
+if "updated_proba_clf" not in st.session_state:
+    st.session_state.updated_proba_clf = None
 
 # Tabs for Regression and Classification
 tab1, tab2 = st.tabs(["Regression", "Classification"])
